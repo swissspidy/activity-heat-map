@@ -1,0 +1,125 @@
+/**
+ * Activity Heat Map
+ * https://pascalbirchler.com
+ *
+ * Copyright (c) 2015 Pascal Birchler
+ * Licensed under the GPLv2+ license.
+ */
+
+#dashboard-widgets-wrap {
+  overflow: auto;
+}
+
+.activity-heat-map__inner {
+  position: relative;
+  min-height: 6em;
+  margin-bottom: 1em;
+}
+
+.activity-heat-map-node {
+  position: absolute;
+  width: 1rem;
+  height: 1rem;
+
+  &:hover,
+  &:focus {
+	z-index: 999999;
+  }
+
+  &__inner {
+	position: relative;
+	top: 50%;
+	left: 50%;
+	border-radius: 100%;
+	background: #51c3fc;
+	transform: translate(-50%, -50%);
+	border: 1px solid transparent;
+	cursor: pointer;
+
+	&:hover {
+	  border: 1px solid #666;
+	}
+
+	&:before,
+	&:after {
+	  content: "";
+	  position: absolute;
+	  opacity: 0;
+	  pointer-events: none;
+	  bottom: 150%;
+	  left: 50%;
+	}
+
+	&:before {
+	  margin: 0 0 5px;
+	  padding: 7px;
+	  background-color: rgba(0, 0, 0, 0.8);
+	  color: #fff;
+	  content: attr(data-content);
+	  text-align: center;
+	  font-size: 14px;
+	  line-height: 1.2;
+	  white-space: nowrap;
+	  transform: translateX(-50%);
+	}
+
+	&:after {
+	  margin-left: -5px;
+	  width: 0;
+	  border-top: 5px solid rgba(0, 0, 0, 0.9);
+	  border-right: 5px solid transparent;
+	  border-left: 5px solid transparent;
+	  font-size: 0;
+	  line-height: 0;
+	}
+
+	&:hover:before,
+	&:hover:after,
+	&:focus:before,
+	&:focus:after {
+	  opacity: 1;
+	}
+
+	&--none {
+	  background: #e5e5e5;
+	  width: 0.3rem;
+	  height: 0.3rem;
+	}
+
+	&--small {
+	  width: 0.3rem;
+	  height: 0.3rem;
+	}
+
+	&--medium {
+	  width: 0.7rem;
+	  height: 0.7rem;
+	}
+
+	&--large {
+	  width: 0.9rem;
+	  height: 0.9rem;
+	}
+  }
+}
+
+.activity-heat-map__streaks {
+  display: flex;
+}
+
+.activity-heat-map-streak {
+  flex: 1;
+  text-align: center;
+
+  &__number {
+	font-weight: 300;
+	line-height: 1.3em;
+	font-size: 24px;
+	display: block;
+	color: #333;
+  }
+
+  &__text {
+	color: #767676;
+  }
+}

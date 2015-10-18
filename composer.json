@@ -1,0 +1,20 @@
+{
+  "name": "swissspidy/activity-heat-map",
+  "description": "Show your site activity in an intuitive heat map.",
+  "version": "1.0.0",
+  "type": "wordpress-plugin",
+  "license": "GPL-2.0+",
+  "authors": [
+    {
+      "name": "Pascal Birchler",
+      "email": "swissspidy@chat.wordpress.org",
+      "homepage": "https://pascalbirchler.com",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+  },
+  "require-dev": {
+    "phpmd/phpmd": "@stable"
+  }
+}

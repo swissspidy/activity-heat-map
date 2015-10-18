@@ -1,0 +1,39 @@
+{
+  "name": "activity-heat-map",
+  "title": "Activity Heat Map",
+  "description": "Show your site activity in an intuitive heat map.",
+  "version": "1.0.0",
+  "homepage": "https://pascalbirchler.com",
+  "license": "GPL-2.0+",
+  "author": {
+    "name": "Pascal Birchler",
+    "email": "swissspidy@chat.wordpress.org",
+    "url": "https://pascalbirchler.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:swissspidy/activity-heat-map.git"
+  },
+  "devDependencies": {
+    "autoprefixer-core": "~5.2.0",
+    "cssnano": "2.6.0",
+    "grunt": "~0.4.0",
+    "grunt-checktextdomain": "~1.0.0",
+    "grunt-contrib-clean": "~0.6.0",
+    "grunt-contrib-sass": "~0.9.0",
+    "grunt-contrib-compress": "~0.13.0",
+    "grunt-contrib-concat": "~0.5.0",
+    "grunt-contrib-copy": "~0.7.0",
+    "grunt-contrib-jshint": "~0.11.0",
+    "grunt-contrib-uglify": "~0.9.0",
+    "grunt-contrib-watch": "~0.6.0",
+    "grunt-phpunit": "~0.3.0",
+    "grunt-postcss": "~0.6.0",
+    "grunt-text-replace": "~0.4.0",
+    "grunt-wp-i18n": "~0.5.0",
+    "grunt-wp-deploy": "~1.1.0",
+    "load-grunt-config": "~0.17.0",
+    "time-grunt": "~1.2.0"
+  },
+  "keywords": []
+}
