@@ -115,14 +115,31 @@ function activity_heat_map_get_data( $filter, $days ) {
  * @return array The data for a specific filter.
  */
 function activity_heat_map_get_streaks( $filter, $days ) {
-	$result            = array();
+	return array(
+		'current' => _activity_heat_map_get_current_streak( $filter, $days ),
+		'longest' => _activity_heat_map_get_longest_streak( $filter, $days ),
+		'total'   => _activity_heat_map_get_total_streak( $filter, $days ),
+	);
+}
 
-	$last_entry = get_option( "ahm_{$filter}_{$days}_last_entry", false );
-
-	$current_streak       = get_option( "ahm_{$filter}_{$days}_current_streak", array(
+/**
+ * Get current streak data.
+ *
+ * @since 1.0.0
+ *
+ * @access private
+ *
+ * @param string $filter Filter to get the data for.
+ * @param int    $days   Number of days.
+ * @return array Streak data.
+ */
+function _activity_heat_map_get_current_streak( $filter, $days ) {
+	$last_entry     = get_option( "ahm_{$filter}_{$days}_last_entry", false );
+	$current_streak = get_option( "ahm_{$filter}_{$days}_current_streak", array(
 		date( 'd-m-Y' ),
 		date( 'd-m-Y' ),
 	) );
+
 	$current_streak_begin = new DateTime( $current_streak[0] );
 	$current_streak_end   = new DateTime( $current_streak[1] );
 	$current_streak_diff  = $current_streak_end->diff( $current_streak_begin )->format( '%a' );
@@ -130,26 +147,44 @@ function activity_heat_map_get_streaks( $filter, $days ) {
 		$current_streak_diff ++;
 	}
 
-	$result['current'] = array(
-		'title'      => __( 'Current streak', 'activity-heat-map' ),
-		'begin'      => $current_streak_begin->format( get_option( 'date_format' ) ),
-		'end'        => $current_streak_end->format( get_option( 'date_format' ) ),
-		'total'      => sprintf( _n( '%s day', '%s days', $current_streak_diff, 'activity-heat-map' ), number_format_i18n( $current_streak_diff ) ),
-		'text'       => '',
+	$result = array(
+		'title' => __( 'Current streak', 'activity-heat-map' ),
+		'begin' => $current_streak_begin->format( get_option( 'date_format' ) ),
+		'end'   => $current_streak_end->format( get_option( 'date_format' ) ),
+		'total' => sprintf( _n( '%s day', '%s days', $current_streak_diff, 'activity-heat-map' ), number_format_i18n( $current_streak_diff ) ),
+		'text'  => '',
 	);
 
-	if ( $last_entry ) {
-		$result['current']['text'] = sprintf( __( 'Last entry %s ago', 'activity-heat-map' ), human_time_diff( strtotime( $last_entry ) ) );
+	if ( false !== $last_entry ) {
+		$result['text'] = sprintf( __( 'Last entry %s ago', 'activity-heat-map' ), human_time_diff( strtotime( $last_entry ) ) );
 	}
 
-	$longest_streak       = get_option( "ahm_{$filter}_{$days}_longest_streak", array(
+	return $result;
+}
+
+/**
+ * Get longest streak data.
+ *
+ * @since 1.0.0
+ *
+ * @access private
+ *
+ * @param string $filter Filter to get the data for.
+ * @param int    $days   Number of days.
+ * @return array Streak data.
+ */
+function _activity_heat_map_get_longest_streak( $filter, $days ) {
+	$last_entry     = get_option( "ahm_{$filter}_{$days}_last_entry", false );
+	$longest_streak = get_option( "ahm_{$filter}_{$days}_longest_streak", array(
 		date( 'd-m-Y' ),
 		date( 'd-m-Y' ),
 	) );
+
 	$longest_streak_begin = new DateTime( $longest_streak[0] );
 	$longest_streak_end   = new DateTime( $longest_streak[1] );
 	$longest_streak_diff  = $longest_streak_end->diff( $longest_streak_begin )->format( '%a' );
-	if ( 0 < $longest_streak_diff ) {
+
+	if ( $last_entry ) {
 		$longest_streak_diff ++;
 	}
 
@@ -162,7 +197,7 @@ function activity_heat_map_get_streaks( $filter, $days ) {
 	 */
 	$longest_streak_format = apply_filters( 'activity_heat_map_longest_streak_format', 'F j' );
 
-	$result['longest'] = array(
+	$result = array(
 		'title' => __( 'Longest streak', 'activity-heat-map' ),
 		'begin' => $longest_streak_begin->format( get_option( 'date_format' ) ),
 		'end'   => $longest_streak_end->format( get_option( 'date_format' ) ),
@@ -174,9 +209,29 @@ function activity_heat_map_get_streaks( $filter, $days ) {
 		),
 	);
 
-	$total = get_option( "ahm_{$filter}_{$days}_total", 0 );
+	if ( 0 === $longest_streak_diff ) {
+		$result['text'] = '';
+	} else if ( 1 === $longest_streak_diff ) {
+		$result['text'] = sprintf( __( '%s', 'activity-heat-map' ), date_i18n( $longest_streak_format, $longest_streak_begin->getTimestamp() ) );
+	}
 
-	$begin  = new DateTime( sprintf( '-%d days', absint( $days ) ) );
+	return $result;
+}
+
+/**
+ * Get total streak data.
+ *
+ * @since 1.0.0
+ *
+ * @access private
+ *
+ * @param string $filter Filter to get the data for.
+ * @param int    $days   Number of days.
+ * @return array Streak data.
+ */
+function _activity_heat_map_get_total_streak( $filter, $days ) {
+	$total = get_option( "ahm_{$filter}_{$days}_total", 0 );
+	$begin = new DateTime( sprintf( '-%d days', absint( $days ) ) );
 
 	/**
 	 * Filter the date format for the total streak text.
@@ -197,7 +252,7 @@ function activity_heat_map_get_streaks( $filter, $days ) {
 		);
 	}
 
-	$result['total'] = array(
+	return array(
 		'title' => $title,
 		'total' => sprintf( _n( '%s total', '%s total', $total, 'activity-heat-map' ), number_format_i18n( $total ) ),
 		'text'  => sprintf(
@@ -206,8 +261,6 @@ function activity_heat_map_get_streaks( $filter, $days ) {
 			date_i18n( $total_format )
 		),
 	);
-
-	return $result;
 }
 
 /**
