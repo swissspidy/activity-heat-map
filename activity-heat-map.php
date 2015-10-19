@@ -53,8 +53,13 @@ function activity_heat_map_enqueue_scripts() {
  * @since 1.0.0
  */
 function activity_heat_map_handle_ajax_requests() {
-	$filter = sanitize_text_field( wp_unslash( $_REQUEST['filter'] ) );
-	$days   = absint( wp_unslash( $_REQUEST['days'] ) );
+	$available_filters = activity_heat_map_get_filters();
+	$filter            = sanitize_text_field( wp_unslash( $_REQUEST['filter'] ) );
+	$days              = absint( wp_unslash( $_REQUEST['days'] ) );
+
+	if ( ! array_key_exists( $filter, $available_filters ) ) {
+		die( wp_json_encode( array() ) );
+	}
 
 	if ( 'streaks' === wp_unslash( $_REQUEST['type'] ) ) {
 		die( wp_json_encode( activity_heat_map_get_streaks( $filter, $days ) ) );
@@ -76,15 +81,9 @@ function activity_heat_map_handle_ajax_requests() {
  */
 function activity_heat_map_get_data( $filter, $days ) {
 	$available_filters = activity_heat_map_get_filters();
-	$result            = array();
-
-	if ( ! array_key_exists( $filter, $available_filters ) ) {
-		return $result;
-	}
-
-	$key    = sprintf( 'filter-%s-%d', $filter, $days );
-	$group  = 'activity-heat-map';
-	$result = wp_cache_get( $key, $group );
+	$key               = sprintf( 'filter-%s-%d', $filter, $days );
+	$group             = 'activity-heat-map';
+	$result            = wp_cache_get( $key, $group );
 
 	if ( ! $result ) {
 		$result = call_user_func( $available_filters[ $filter ]['callback'], $days );
@@ -116,12 +115,7 @@ function activity_heat_map_get_data( $filter, $days ) {
  * @return array The data for a specific filter.
  */
 function activity_heat_map_get_streaks( $filter, $days ) {
-	$available_filters = activity_heat_map_get_filters();
 	$result            = array();
-
-	if ( ! array_key_exists( $filter, $available_filters ) ) {
-		return $result;
-	}
 
 	$last_entry = get_option( "ahm_{$filter}_{$days}_last_entry", false );
 
