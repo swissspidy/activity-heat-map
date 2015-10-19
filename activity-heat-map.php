@@ -28,7 +28,7 @@ function activity_heat_map_init() {
 
 	add_action( 'wp_ajax_activity_heat_map', 'activity_heat_map_handle_ajax_requests' );
 
-	add_action( 'activity_heat_map_filter_result', 'activity_heat_map_calculate_streak', 10, 3 );
+	add_filter( 'activity_heat_map_filter_result', 'activity_heat_map_calculate_streak', 10, 3 );
 }
 
 add_action( 'init', 'activity_heat_map_init' );
@@ -86,7 +86,7 @@ function activity_heat_map_get_data( $filter, $days ) {
 	$group  = 'activity-heat-map';
 	$result = wp_cache_get( $key, $group );
 
-	if ( empty( $result ) ) {
+	if ( ! $result ) {
 		$result = call_user_func( $available_filters[ $filter ]['callback'], $days );
 
 		wp_cache_set( $key, $result, $group, 12 * HOUR_IN_SECONDS );
@@ -215,9 +215,12 @@ function activity_heat_map_get_streaks( $filter, $days ) {
 /**
  * Calculate streaks based on the filter data.
  *
+ * @since 1.0.0
+ *
  * @param array  $result The result data.
  * @param string $filter The filter data.
  * @param int    $days   Number of days.
+ * @return array The unmodified result data.
  */
 function activity_heat_map_calculate_streak( $result, $filter, $days ) {
 	$total                = 0;
@@ -262,6 +265,8 @@ function activity_heat_map_calculate_streak( $result, $filter, $days ) {
 	), false );
 	update_option( "ahm_{$filter}_{$days}_total", $total, false );
 	update_option( "ahm_{$filter}_{$days}_last_entry", $last_entry, false );
+
+	return $result;
 }
 
 /**
