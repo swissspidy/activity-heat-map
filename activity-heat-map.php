@@ -132,7 +132,9 @@ function activity_heat_map_get_streaks( $filter, $days ) {
 	$current_streak_begin = new DateTime( $current_streak[0] );
 	$current_streak_end   = new DateTime( $current_streak[1] );
 	$current_streak_diff  = $current_streak_end->diff( $current_streak_begin )->format( '%a' );
-	$current_streak_diff ++;
+	if ( 0 < $current_streak_diff ) {
+		$current_streak_diff ++;
+	}
 
 	$result['current'] = array(
 		'title'      => __( 'Current streak', 'activity-heat-map' ),
@@ -153,7 +155,9 @@ function activity_heat_map_get_streaks( $filter, $days ) {
 	$longest_streak_begin = new DateTime( $longest_streak[0] );
 	$longest_streak_end   = new DateTime( $longest_streak[1] );
 	$longest_streak_diff  = $longest_streak_end->diff( $longest_streak_begin )->format( '%a' );
-	$longest_streak_diff ++;
+	if ( 0 < $longest_streak_diff ) {
+		$longest_streak_diff ++;
+	}
 
 	/**
 	 * Filter the date format for the longest streak text.
