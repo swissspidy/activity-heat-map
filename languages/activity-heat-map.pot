@@ -87,7 +87,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: classes/class-dashboard-widget.php:48
-msgid "Acitivty Heat Map"
+msgid "Activity Heat Map"
 msgstr ""
 
 #: classes/class-dashboard-widget.php:92
