@@ -45,7 +45,7 @@ class Activity_Heat_Map_Dashboard_Widget {
 	public static function add_dashboard_widget() {
 		wp_add_dashboard_widget(
 			'activity-heat-map',
-			__( 'Acitivty Heat Map', 'activity-heat-map' ),
+			__( 'Activity Heat Map', 'activity-heat-map' ),
 			array( __CLASS__, 'dashboard_widget_content' ),
 			array( __CLASS__, 'dashboard_widget_controls' )
 		);
